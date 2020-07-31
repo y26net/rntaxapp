@@ -41,7 +41,7 @@ jobs:
           # Required Base64 encoded mobileprovision file.
           mobileprovision-base64: ios/rntaxapp.mobileprovision
           # Required For example, "iOS Distribution".
-          code-signing-identity:
+          code-signing-identity: iOS Development
           # Required Team id.
           team-id: C5ZW694LZ9
           # .xcworkspace path. Default "".
@@ -53,6 +53,6 @@ jobs:
           # For example, "myscheme".
           # scheme: 'ios/rntaxapp.xcodeproj/xcshareddata/xcschemes/rntaxapp.xcscheme'
           # Certificate password. Default "".
-          certificate-password: 123456
+          # certificate-password:
           # Output path of ipa. Default "output.ipa".
           output-path: app-release.ipa

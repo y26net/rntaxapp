@@ -23,38 +23,50 @@ jobs:
       - name: init cocoapods
         run: cd ios && sudo gem install cocoapods --pre && sudo gem install fastlane && pod install
       - name: show dir
-        run: cd ios && ls && cp ios-build.mobileprovision /Users/runner/work/rntaxapp/rntaxapp/ios-build.mobileprovision && ls /Users/runner/work/rntaxapp && ls /Users/runner/work/rntaxapp/rntaxapp
-      - name: iOS Build Action
-        uses: yukiarrr/ios-build-action@v0.5.1
+        run: cd ios && ls
+      # 清理工程xcodebuild clean -workspace <workspace_path> -scheme <app_scheme> -configuration <Debug Or Release> 无workspace
+      - name: iOS Build Clean
+        run: xcodebuild clean -workspace ios/rntaxapp.xcworkspace  -scheme  ios/rntaxapp -configuration Debug
+      # 接下来生成archive包xcodebuild archive -workspace 项目名称.xcworkspace -scheme 项目名称 -configuration Release -archivePath archive包存储路径 CODE_SIGN_IDENTITY=证书 PROVISIONING_PROFILE=描述文件UUID
+      - name: iOS Build Archive
+        run: xcodebuild archive -workspace ios/rntaxapp.xcworkspace -scheme ios/rntaxapp -configuration Release -archivePath ios/archive/debug.ipa CODE_SIGN_IDENTITY=ios/ca-tax.p12 PROVISIONING_PROFILE=ios/rntaxapp.mobileprovision
+      # 生成ipa文件xcodebuild -exportArchive -archivePath archive包文件路径 -exportPath 导出到指定文件目录 -exportOptionsPlist 配置文件路径
+      - name: iOS Build exportArchive
+        run: xcodebuild -exportArchive -archivePath ios/archive/debug.ipa.xcarchive  -exportPath ios/archive/debug -exportOptionsPlist ios/rntaxapp/Info.plist
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
         with:
-          # project-path: ios/rntaxapp.xcodeproj
-          # p12-base64: ${{ secrets.P12_BASE64 }}
-          # mobileprovision-base64: ${{ secrets.MOBILEPROVISION_BASE64 }}
-          # code-signing-identity: ${{ secrets.CODE_SIGNING_IDENTITY }}
-          # team-id: ${{ secrets.TEAM_ID }}
-          # workspace-path: ios/rntaxapp.xcworkspace
-          # ------------------------------------------------
-          # Required .xcodeproj path.
-          project-path: ios/rntaxapp.xcodeproj
-          # Required Base64 encoded p12 file.
-          # p12-base64: ios/ca-tax.p12
-          p12-base64: ios/ios-build.p12
-          # Required Base64 encoded mobileprovision file.
-          # mobileprovision-base64: ios/rntaxapp.mobileprovision
-          mobileprovision-base64: ios/ios-build.mobileprovision
-          # Required For example, "iOS Distribution".
-          code-signing-identity: iOS Development
-          # Required Team id.
-          team-id: C5ZW694LZ9
-          # .xcworkspace path. Default "".
-          workspace-path: ios/rntaxapp.xcworkspace
-          # Choose app-store, "ad-hoc", "package" "enterprise", "development", or "developer-id". Default "app-store".
-          export-method: development
-          # For example, "Debug", "Release". Default "Release".
-          configuration: Debug
-          # For example, "myscheme".
-          # scheme: 'ios/rntaxapp.xcodeproj/xcshareddata/xcschemes/rntaxapp.xcscheme'
-          # Certificate password. Default "".
-          # certificate-password:
-          # Output path of ipa. Default "output.ipa".
-          output-path: app-release.ipa
+          name: app-release.ipa
+          path: ios/archive/debug/
+      # - name: iOS Build Action
+      #   uses: yukiarrr/ios-build-action@v0.5.1
+      #   with:
+      #     # project-path: ios/rntaxapp.xcodeproj
+      #     # p12-base64: ${{ secrets.P12_BASE64 }}
+      #     # mobileprovision-base64: ${{ secrets.MOBILEPROVISION_BASE64 }}
+      #     # code-signing-identity: ${{ secrets.CODE_SIGNING_IDENTITY }}
+      #     # team-id: ${{ secrets.TEAM_ID }}
+      #     # workspace-path: ios/rntaxapp.xcworkspace
+      #     # ------------------------------------------------
+      #     # Required .xcodeproj path.
+      #     project-path: ios/rntaxapp.xcodeproj
+      #     # Required Base64 encoded p12 file.
+      #     p12-base64: ios/ca-tax.p12
+      #     # Required Base64 encoded mobileprovision file.
+      #     mobileprovision-base64: ios/rntaxapp.mobileprovision
+      #     # Required For example, "iOS Distribution".
+      #     code-signing-identity: iOS Development
+      #     # Required Team id.
+      #     team-id: C5ZW694LZ9
+      #     # .xcworkspace path. Default "".
+      #     workspace-path: ios/rntaxapp.xcworkspace
+      #     # Choose app-store, "ad-hoc", "package" "enterprise", "development", or "developer-id". Default "app-store".
+      #     export-method: development
+      #     # For example, "Debug", "Release". Default "Release".
+      #     configuration: Debug
+      #     # For example, "myscheme".
+      #     # scheme: 'ios/rntaxapp.xcodeproj/xcshareddata/xcschemes/rntaxapp.xcscheme'
+      #     # Certificate password. Default "".
+      #     # certificate-password:
+      #     # Output path of ipa. Default "output.ipa".
+      #     output-path: app-release.ipa

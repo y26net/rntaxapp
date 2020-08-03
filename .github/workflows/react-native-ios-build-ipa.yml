@@ -23,7 +23,7 @@ jobs:
       - name: init cocoapods
         run: cd ios && sudo gem install cocoapods --pre && sudo gem install fastlane && pod install
       - name: show dir
-        run: cd ios && ls
+        run: cd ios && ls && cp ios-build.mobileprovision /Users/runner/work/rntaxapp/rntaxapp/ios-build.mobileprovision && ls /Users/runner/work/rntaxapp && ls /Users/runner/work/rntaxapp/rntaxapp
       - name: iOS Build Action
         uses: yukiarrr/ios-build-action@v0.5.1
         with:

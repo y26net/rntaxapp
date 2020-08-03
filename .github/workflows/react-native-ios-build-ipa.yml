@@ -21,7 +21,7 @@ jobs:
         run: |
           npm install
       - name: init cocoapods
-        run: cd ios && sudo gem install cocoapods --pre && pod install
+        run: cd ios && sudo gem install cocoapods --pre && sudo gem install fastlane && pod install
       - name: show dir
         run: cd ios && ls
       - name: iOS Build Action
@@ -37,9 +37,11 @@ jobs:
           # Required .xcodeproj path.
           project-path: ios/rntaxapp.xcodeproj
           # Required Base64 encoded p12 file.
-          p12-base64: ios/ca-tax.p12
+          # p12-base64: ios/ca-tax.p12
+          p12-base64: ios/ios-build.p12
           # Required Base64 encoded mobileprovision file.
-          mobileprovision-base64: ios/rntaxapp.mobileprovision
+          # mobileprovision-base64: ios/rntaxapp.mobileprovision
+          mobileprovision-base64: ios/ios-build.mobileprovision
           # Required For example, "iOS Distribution".
           code-signing-identity: iOS Development
           # Required Team id.
